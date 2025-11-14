@@ -82,8 +82,8 @@ This project demonstrates integration between a local Large Language Model (Olla
 
 1. **Clone the repository**
 ```bash
-   git clone https://github.com/YOUR_USERNAME/heypico-llm-maps-test.git
-   cd heypico-llm-maps-test
+   git clone https://github.com/pishapis/heypico-test.git
+   cd heypico-test
 ```
 
 2. **Install Ollama and pull the model**
