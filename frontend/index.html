@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🗺️ LLM Google Maps Integration</title>
+    <link rel="stylesheet" href="./assets/css/style.css" />
+</head>
+
+<body>
+    <div class="health-status" id="healthStatus">
+        <div class="status-item">
+            <span class="status-indicator offline" id="ollamaStatus"></span>
+            <span>Ollama: <strong id="ollamaText">Checking...</strong></span>
+        </div>
+        <div class="status-item">
+            <span class="status-indicator offline" id="apiStatus"></span>
+            <span>Maps API: <strong id="apiText">Checking...</strong></span>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🗺️ LLM Maps Finder</h1>
+            <p>AI-powered location search with Google Maps integration</p>
+        </div>
+
+        <div class="card">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('location')">📍 Find Location</button>
+                <!-- <button class="tab" onclick="switchTab('nearby')">🔍 Nearby Places</button> -->
+                <button class="tab" onclick="switchTab('reverse')">🧭 Reverse Geocode</button>
+            </div>
+
+            <!-- Location Search Tab -->
+            <div id="locationTab" class="tab-content active">
+                <div class="input-group">
+                    <select id="queryType">
+                        <option value="location">📍 Location</option>
+                        <option value="place">🏪 Place/Business</option>
+                        <option value="street">🛣️ Street/Road</option>
+                        <option value="building">🏢 Building/Landmark</option>
+                    </select>
+                    <input type="text" id="promptInput"
+                        placeholder="e.g., 'Show me Malioboro Yogyakarta' or 'Find Pizza Hut Jakarta'"
+                        onkeypress="if(event.key==='Enter') searchLocation()" />
+                    <button onclick="searchLocation()" id="searchBtn">Search</button>
+                </div>
+
+                <div class="examples">
+                    <p><strong>💡 Try these examples:</strong></p>
+                    <span class="example-btn" onclick="setExample('Show me Borobudur Temple', 'building')">🏛️
+                        Borobudur</span>
+                    <span class="example-btn" onclick="setExample('Find Eiffel Tower Paris', 'building')">🗼 Eiffel
+                        Tower</span>
+                    <span class="example-btn" onclick="setExample('Malioboro Street Yogyakarta', 'street')">🛍️
+                        Malioboro</span>
+                    <span class="example-btn" onclick="setExample('Starbucks Senayan Jakarta', 'place')">☕
+                        Starbucks</span>
+                </div>
+
+                <div class="loading" id="loading">
+                    🔄 Processing your request
+                </div>
+
+                <div class="error" id="error"></div>
+
+                <div class="result" id="result">
+                    <h3>📍 Location Found</h3>
+                    <div class="info-box" id="locationInfo"></div>
+                    <div class="map-container" id="mapContainer"></div>
+                    <a href="#" target="_blank" class="link-button" id="openMapsLink">🗺️ Open in Google Maps</a>
+                    <!-- <button onclick="findNearby()" id="findNearbyBtn" style="background: #34a853;">🔍 Find Nearby Places</button> -->
+                </div>
+            </div>
+
+            <!-- Nearby Places Tab -->
+            <div id="nearbyTab" class="tab-content">
+                <div class="input-group">
+                    <input type="number" id="nearbyLat" placeholder="Latitude" step="any" />
+                    <input type="number" id="nearbyLng" placeholder="Longitude" step="any" />
+                    <select id="placeType">
+                        <option value="restaurant">🍽️ Restaurant</option>
+                        <option value="cafe">☕ Cafe</option>
+                        <option value="hotel">🏨 Hotel</option>
+                        <option value="hospital">🏥 Hospital</option>
+                        <option value="atm">🏧 ATM</option>
+                        <option value="bank">🏦 Bank</option>
+                        <option value="gas_station">⛽ Gas Station</option>
+                        <option value="pharmacy">💊 Pharmacy</option>
+                    </select>
+                    <button onclick="searchNearby()" id="nearbyBtn">Search Nearby</button>
+                </div>
+
+                <div class="loading" id="loadingNearby">
+                    🔄 Searching nearby places
+                </div>
+
+                <div class="error" id="errorNearby"></div>
+
+                <div class="result" id="resultNearby">
+                    <h3>🔍 Nearby Places</h3>
+                    <div class="info-box" id="nearbyInfo"></div>
+                    <div class="places-grid" id="placesGrid"></div>
+                </div>
+            </div>
+
+            <!-- Reverse Geocode Tab -->
+            <div id="reverseTab" class="tab-content">
+                <div class="input-group">
+                    <input type="number" id="reverseLat" placeholder="Latitude" step="any" />
+                    <input type="number" id="reverseLng" placeholder="Longitude" step="any" />
+                    <button onclick="reverseGeocode()" id="reverseBtn">Find Address</button>
+                </div>
+
+                <div class="examples">
+                    <p><strong>💡 Try these coordinates:</strong></p>
+                    <span class="example-btn" onclick="setReverseExample(-7.7956, 110.3695)">📍 Yogyakarta Center</span>
+                    <span class="example-btn" onclick="setReverseExample(-6.2088, 106.8456)">📍 Jakarta Center</span>
+                    <span class="example-btn" onclick="setReverseExample(-7.6079, 110.2038)">📍 Borobudur</span>
+                </div>
+
+                <div class="loading" id="loadingReverse">
+                    🔄 Finding address
+                </div>
+
+                <div class="error" id="errorReverse"></div>
+
+                <div class="result" id="resultReverse">
+                    <h3>🧭 Address Found</h3>
+                    <div class="info-box" id="reverseInfo"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./assets/js/llm.js"></script>
+</body>
+
+</html>
