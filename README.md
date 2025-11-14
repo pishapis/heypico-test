@@ -10,6 +10,9 @@ Technical test submission for HeyPico.ai
 ### Location Search Result
 ![Search Result](screenshots/search.webp)
 
+### Nearby Places Search
+![Nearby Places](screenshots/nearby.webp)
+
 ### Reverse Geocoding
 ![Reverse Geocoding](screenshots/reverse.webp)
 
@@ -24,6 +27,7 @@ This project demonstrates integration between a local Large Language Model (Olla
 - **Location Search** - Extract and geocode locations from natural language
 - **Interactive Maps** - Embedded Google Maps with markers and controls
 - **Reverse Geocoding** - Convert coordinates to human-readable addresses
+- **Nearby Places Search** - Find restaurants, cafes, hotels, and more near any location
 - **Multiple Query Types** - Support for locations, places, streets, and buildings
 - **Direct Links** - Quick access to open locations in Google Maps
 
@@ -51,6 +55,7 @@ This project demonstrates integration between a local Large Language Model (Olla
 **APIs:**
 - Google Maps Geocoding API
 - Google Maps JavaScript API
+- Google Places API (Nearby Search)
 
 **Frontend:**
 - Vanilla HTML5/CSS3/JavaScript
@@ -67,7 +72,9 @@ This project demonstrates integration between a local Large Language Model (Olla
                             ▼
                    ┌─────────────────┐
                    │  Google Maps    │
-                   │      API        │
+                   │  - Geocoding    │
+                   │  - JavaScript   │
+                   │  - Places API   │
                    └─────────────────┘
 ```
 
@@ -112,6 +119,7 @@ This project demonstrates integration between a local Large Language Model (Olla
    In Google Cloud Console, enable:
    - ✅ Geocoding API
    - ✅ Maps JavaScript API
+   - ✅ Places API (for Nearby Search feature)
 
 ### Running the Application
 
@@ -156,6 +164,22 @@ Example coordinates:
 - Yogyakarta Center: `-7.7956, 110.3695`
 - Jakarta Center: `-6.2088, 106.8456`
 - Borobudur Temple: `-7.6079, 110.2038`
+
+### Nearby Places Search
+1. Search for a location first
+2. Click "Find Nearby Places" button OR switch to "Nearby Places" tab
+3. Select place type (restaurant, cafe, hotel, etc.)
+4. View results with ratings and addresses
+
+Supported place types:
+- 🍽️ Restaurants
+- ☕ Cafes
+- 🏨 Hotels
+- 🏥 Hospitals
+- 🏧 ATMs
+- 🏦 Banks
+- ⛽ Gas Stations
+- 💊 Pharmacies
 
 ## API Documentation
 
@@ -211,7 +235,44 @@ Example coordinates:
 }
 ```
 
-### 3. Health Check
+### 3. Nearby Places Search
+**Endpoint:** `POST /api/places/nearby`
+
+**Request:**
+```json
+{
+  "lat": -7.7937525,
+  "lng": 110.3657077,
+  "type": "restaurant",
+  "radius": 1500
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "places": [
+    {
+      "name": "Restaurant Name",
+      "address": "Street Address",
+      "rating": 4.5,
+      "user_ratings_total": 150,
+      "types": ["restaurant", "food"],
+      "location": {
+        "lat": -7.7938,
+        "lng": 110.3658
+      },
+      "place_id": "ChIJ...",
+      "open_now": true
+    }
+  ],
+  "count": 10,
+  "from_cache": false
+}
+```
+
+### 4. Health Check
 **Endpoint:** `GET /api/health`
 
 **Response:**
@@ -224,7 +285,7 @@ Example coordinates:
 }
 ```
 
-### 4. Cache Statistics
+### 5. Cache Statistics
 **Endpoint:** `GET /api/cache/stats`
 
 **Response:**
@@ -236,7 +297,7 @@ Example coordinates:
 }
 ```
 
-### 5. Clear Cache
+### 6. Clear Cache
 **Endpoint:** `POST /api/cache/clear`
 
 **Response:**
@@ -283,15 +344,20 @@ Example coordinates:
 
 ## Known Limitations
 
-1. **Google Maps Free Tier** - Limited to specific APIs without billing:
+1. **Google Maps APIs Used:**
    - ✅ Geocoding API - Fully functional
    - ✅ Maps JavaScript API - Fully functional  
    - ✅ Reverse Geocoding - Fully functional
-   - ❌ Places API - Requires billing account (feature disabled)
+   - ✅ Places API (Nearby Search) - **Fully functional with billing enabled**
 
-2. **LLM Accuracy** - Location extraction depends on LLM understanding
-3. **Cache Invalidation** - Manual cache clear required for outdated data
-4. **Single Language Model** - Only Llama 3.1 supported by default
+2. **Places API Requirements:**
+   - Requires active billing account in Google Cloud Console
+   - Free tier provides $200 credit per month
+   - Nearby search limited to 10 results per query (configurable)
+
+3. **LLM Accuracy** - Location extraction depends on LLM understanding
+4. **Cache Invalidation** - Manual cache clear required for outdated data
+5. **Single Language Model** - Only Llama 3.1 supported by default
 
 ## Design Decisions
 
@@ -361,6 +427,16 @@ I chose to build a custom frontend for several reasons:
 - Clear cache to free up quota: `POST /api/cache/clear`
 - Increase limits in `app.py` if needed
 
+### Places API Not Working
+**Problem:** "REQUEST_DENIED" or "Nearby Places" feature not working
+
+**Solutions:**
+- Verify Places API is enabled in Google Cloud Console
+- Ensure billing account is linked and active
+- Check API key includes Places API in restrictions
+- Wait 5 minutes after enabling Places API
+- Verify you have remaining quota in billing dashboard
+
 ## Project Structure
 ```
 heypico-llm-maps/
@@ -391,6 +467,8 @@ heypico-llm-maps/
 - [x] Interactive map display with markers
 - [x] Zoom and pan controls
 - [x] Open in Google Maps link
+- [x] Nearby places search with multiple types
+- [x] Places results with ratings and addresses
 - [x] Reverse geocoding functionality
 - [x] Health monitoring status
 - [x] Cache hit indicators
