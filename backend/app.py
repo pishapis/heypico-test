@@ -202,6 +202,8 @@ def nearby_places():
         if cached_result:
             print(f"[CACHE HIT] Nearby places")
             cached_result['from_cache'] = True
+            # Ensure API key is included in cached response
+            cached_result['api_key'] = GOOGLE_MAPS_API_KEY
             return jsonify(cached_result)
         
         print(f"[GOOGLE] Searching nearby {place_type}...")
@@ -237,6 +239,7 @@ def nearby_places():
                 'success': True,
                 'places': simplified_results,
                 'count': len(simplified_results),
+                'api_key': GOOGLE_MAPS_API_KEY,  # Add API key to response
                 'from_cache': False
             }
             
