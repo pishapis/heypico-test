@@ -405,7 +405,7 @@ This project is created as a technical test submission for HeyPico.ai.
 
 For questions or clarifications about this submission, please contact:
 - **Email:** hapisadi12@gmail.com
-- **GitHub:** [\[Your GitHub profile\]](https://github.com/pishapis)
+- **GitHub:** https://github.com/pishapis
 
 ---
 
