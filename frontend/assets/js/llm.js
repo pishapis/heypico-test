@@ -155,84 +155,84 @@ function initMap(coords, locationName) {
   }
 }
 
-// function findNearby() {
-//   if (!currentLocation) return;
+function findNearby() {
+  if (!currentLocation) return;
 
-//   document.getElementById("nearbyLat").value = currentLocation.coordinates.lat;
-//   document.getElementById("nearbyLng").value = currentLocation.coordinates.lng;
-//   switchTab("nearby");
-//   document.querySelector("[onclick=\"switchTab('nearby')\"]").click();
-// }
+  document.getElementById("nearbyLat").value = currentLocation.coordinates.lat;
+  document.getElementById("nearbyLng").value = currentLocation.coordinates.lng;
+  switchTab("nearby");
+  document.querySelector("[onclick=\"switchTab('nearby')\"]").click();
+}
 
-// async function searchNearby() {
-//   const lat = document.getElementById("nearbyLat").value;
-//   const lng = document.getElementById("nearbyLng").value;
-//   const type = document.getElementById("placeType").value;
+async function searchNearby() {
+  const lat = document.getElementById("nearbyLat").value;
+  const lng = document.getElementById("nearbyLng").value;
+  const type = document.getElementById("placeType").value;
 
-//   if (!lat || !lng) {
-//     showError("errorNearby", "Please enter coordinates");
-//     return;
-//   }
+  if (!lat || !lng) {
+    showError("errorNearby", "Please enter coordinates");
+    return;
+  }
 
-//   hideResults("resultNearby", "errorNearby");
-//   showLoading("loadingNearby", true);
-//   document.getElementById("nearbyBtn").disabled = true;
+  hideResults("resultNearby", "errorNearby");
+  showLoading("loadingNearby", true);
+  document.getElementById("nearbyBtn").disabled = true;
 
-//   try {
-//     const response = await fetch("http://localhost:5000/api/places/nearby", {
-//       method: "POST",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify({ lat, lng, type, radius: 1500 }),
-//     });
+  try {
+    const response = await fetch("http://localhost:5000/api/places/nearby", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ lat, lng, type, radius: 1500 }),
+    });
 
-//     const data = await response.json();
+    const data = await response.json();
 
-//     if (data.success) {
-//       displayNearbyResults(data);
-//     } else {
-//       showError("errorNearby", data.error || "No places found");
-//     }
-//   } catch (error) {
-//     showError("errorNearby", "Failed to search nearby places");
-//   } finally {
-//     showLoading("loadingNearby", false);
-//     document.getElementById("nearbyBtn").disabled = false;
-//   }
-// }
+    if (data.success) {
+      displayNearbyResults(data);
+    } else {
+      showError("errorNearby", data.error || "No places found");
+    }
+  } catch (error) {
+    showError("errorNearby", "Failed to search nearby places");
+  } finally {
+    showLoading("loadingNearby", false);
+    document.getElementById("nearbyBtn").disabled = false;
+  }
+}
 
-// function displayNearbyResults(data) {
-//   const cacheTag = data.from_cache
-//     ? '<span class="badge cache">💾 Cached</span>'
-//     : '<span class="badge">🔄 Live</span>';
+function displayNearbyResults(data) {
+  const cacheTag = data.from_cache
+    ? '<span class="badge cache">💾 Cached</span>'
+    : '<span class="badge">🔄 Live</span>';
 
-//   document.getElementById("nearbyInfo").innerHTML = `
-//                 <p><strong>Found ${data.count} places</strong> ${cacheTag}</p>
-//             `;
+  document.getElementById("nearbyInfo").innerHTML = `
+                <p><strong>Found ${data.count} places</strong> ${cacheTag}</p>
+            `;
 
-//   const placesGrid = document.getElementById("placesGrid");
-//   placesGrid.innerHTML = data.places
-//     .map(
-//       (place) => `
-//                 <div class="place-card">
-//                     <h4>${place.name}</h4>
-//                     <p>📍 ${place.address || "No address"}</p>
-//                     ${
-//                       place.rating
-//                         ? `<p class="rating">⭐ ${place.rating} (${
-//                             place.user_ratings_total || 0
-//                           } reviews)</p>`
-//                         : ""
-//                     }
-//                     <p style="font-size: 12px; color: #999;">${place.types
-//                       .slice(0, 2)
-//                       .join(", ")}</p>
-//                 </div>
-//             `
-//     )
-//     .join("");
+  const placesGrid = document.getElementById("placesGrid");
+  placesGrid.innerHTML = data.places
+    .map(
+      (place) => `
+                <div class="place-card">
+                    <h4>${place.name}</h4>
+                    <p>📍 ${place.address || "No address"}</p>
+                    ${
+                      place.rating
+                        ? `<p class="rating">⭐ ${place.rating} (${
+                            place.user_ratings_total || 0
+                          } reviews)</p>`
+                        : ""
+                    }
+                    <p style="font-size: 12px; color: #999;">${place.types
+                      .slice(0, 2)
+                      .join(", ")}</p>
+                </div>
+            `
+    )
+    .join("");
 
-//   document.getElementById("resultNearby").classList.add("active");
-// }
+  document.getElementById("resultNearby").classList.add("active");
+}
 
 async function reverseGeocode() {
   const lat = document.getElementById("reverseLat").value;
